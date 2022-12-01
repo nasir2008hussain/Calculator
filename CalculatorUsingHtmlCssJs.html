@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="*-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NasirHussainCalculator</title>
+    <style>
+        .numbutton {
+            border: 1px solid black;
+            margin: 5px 5px;
+            height: 30px;
+            width: 30px;
+            border-radius: 8px;
+            font-size: medium;
+        }
+
+        .numbutton:hover {
+            background-color: black;
+            color: white;
+            cursor: pointer;
+        }
+
+        #qbox {
+            border: 2px solid black;
+            height: 50px;
+            width: 160px;
+            border-radius: 8px;
+            text-align: left;
+            padding-left: 5px;
+            padding-top: 3px;
+        }
+
+        .ref {
+            margin-top: 3px;
+            height: 30px;
+            width: 162px;
+            border-radius: 5px;
+            border: 2px solid black;
+        }
+
+        .ref:hover {
+            background-color: black;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <h2>Calculator</h2>
+        <p id="qbox"></p>
+        <p id="abox"></p>
+
+</body </center>
+<center>
+    <div class="numberbo*">
+        <input onclick="showScreen(7)" class="numbutton" id="n7" type="button" value="7">
+        <input onclick="showScreen(8)" class="numbutton" id="n8" type="button" value="8">
+        <input onclick="showScreen(9)" class="numbutton" id="n9" type="button" value="9">
+        <input onclick="showScreen(`/`)" class="numbutton" id="div" type="button" value="/">
+        <br>
+        <input onclick="showScreen(4)" class="numbutton" id="n4" type="button" value="4">
+        <input onclick="showScreen(5)" class="numbutton" id="n5" type="button" value="5">
+        <input onclick="showScreen(6)" class="numbutton" id="n6" type="button" value="6">
+        <input onclick="showScreen(`*`)" class="numbutton" id="mul" type="button" value="*">
+        <br>
+        <input onclick="showScreen(1)" class="numbutton" id="n1" type="button" value="1">
+        <input onclick="showScreen(2)" class="numbutton" id="n2" type="button" value="2">
+        <input onclick="showScreen(3)" class="numbutton" id="n3" type="button" value="3">
+        <input onclick="showScreen(`-`)" class="numbutton" id="sub" type="button" value="-">
+        <br>
+        <input onclick="removeScreen()" class="numbutton" id="np" type="button" value="&#8592">
+        <input onclick="showScreen(0)" class="numbutton" id="n0" type="button" value="0">
+        <input onclick="Calculator()" class="numbutton" id="ans" type="button" value="=">
+        <input onclick="showScreen(`+`)" class="numbutton" id="sum" type="button" value="+">
+        <br>
+        <input onclick="refresh()" class="ref" id="sum" type="button" value="REFRESH">
+    </div>
+</center>
+
+<script>
+    let mystring = ""
+    let arr = new Array()
+
+    function refresh() {
+        // to clean both answer box and question box
+        mystring = ""
+        document.getElementById("qbox").innerHTML = mystring
+        document.getElementById("abox").innerHTML = mystring
+    }
+    function showScreen(num) {
+        //showing user input on string by taking it in string and appending on it
+        mystring += num
+        document.getElementById("qbox").innerHTML = mystring
+
+    }
+    function removeScreen() {
+        //removing from recently entered input by removing it from string and updating it
+        mystring = mystring.slice(0, (mystring.length - 1));
+        document.getElementById("qbox").innerHTML = mystring
+
+    }
+    function Calculator() {
+        // ------------------first converting all string values in integer along with operator and storing in array----------------------
+        let k = 0
+        let j = 0
+        let numstr = ""
+        let myNum = 0
+        for (j = 0; j < mystring.length; j++) {
+            if (mystring[j] != '+' && mystring[j] != '-' && mystring[j] != '/' && mystring[j] != '*') {
+                numstr += mystring[j]
+            }
+            else {
+                let myNum = (~~numstr)
+                arr[k] = myNum
+                k++
+                arr[k] = mystring[j]
+                k++;
+                numstr = "";
+                myNum = 0
+            }
+        }
+        myNum = (~~numstr)
+        arr[k] = myNum
+        numstr = ""
+        myNum = 0
+
+        // -----------------actual arithmetic operation start from here-----------------------
+        let a = 0;
+        let b = true
+
+        //accoring to arithmetic rule first computing all operand having divide symbol in their between
+        while (b == true) {
+            if (arr.indexOf(`/`) >= 0 && arr.indexOf('/') < arr.length) {
+                let indx = arr.indexOf('/')
+                a = arr[indx - 1] / arr[indx + 1]
+                arr[indx - 1] = a
+                arr.splice(indx, 2)
+                b = true
+            }
+            else {
+                b = false
+            }
+        }
+
+        b = true
+
+        //now with multiply symbol.... untill all multiply symbol pop out from array
+        for (i = 0; i < arr.length; i++) {
+
+            while (b == true) {
+                if (arr.indexOf(`*`) >= 0 && arr.indexOf('*') < arr.length) {
+                    let indx = arr.indexOf('*')
+                    a = arr[indx - 1] * arr[indx + 1]
+                    arr[indx - 1] = a
+                    arr.splice(indx, 2)
+                    b = true
+                }
+                else {
+                    b = false
+                }
+            }
+
+            b = true
+
+            //this is for subtration
+            for (i = 0; i < arr.length; i++) {
+                while (b == true) {
+                    if (arr.indexOf(`-`) >= 0 && arr.indexOf('-') < arr.length) {
+                        let indx = arr.indexOf('-')
+                        a = arr[indx - 1] - arr[indx + 1]
+                        arr[indx - 1] = a
+                        arr.splice(indx, 2)
+                        b = true
+                    }
+                    else {
+                        b = false
+                    }
+                }
+            }
+
+            b = true
+            //here at last the addition operation
+            for (i = 0; i < arr.length; i++) {
+                while (b == true) {
+                    if (arr.indexOf(`+`) >= 0 && arr.indexOf('+') < arr.length) {
+                        let indx = arr.indexOf('+')
+                        a = arr[indx - 1] + arr[indx + 1]
+                        arr[indx - 1] = a
+                        arr.splice(indx, 2)
+                        b = true
+                    }
+                    else {
+                        b = false
+                    }
+                }
+            }
+        }
+        //in the last the array have only two operand which is the result of all computation this is why we dont need 
+        //to worry about updating value of `a` becuase we are updating array 
+        document.getElementById("abox").innerHTML = a
+    }
+
+</script>
+</body>
+
+</html>
